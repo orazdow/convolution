@@ -56,6 +56,7 @@ public class Gui extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 conv.process(img, conv.blur);
+                conv.process(img, conv.edge);
                 display.display(img);
             }
         });

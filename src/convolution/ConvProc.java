@@ -7,9 +7,9 @@ import java.awt.image.WritableRaster;
 
 public class ConvProc {
     
-    WritableRaster out;
-    static float[][] blur = new float[][]{{1,1,1},{1,1,1},{1,1,1}};
-
+    WritableRaster out, read;
+    static float[][] blur = new float[][]{{1, 1, 1},{1, 1, 1},{1, 1, 1}};
+    static float[][] edge = new float[][]{{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};
     
     void process(BufferedImage img, float[][] kernel){
         int w = img.getWidth();
@@ -17,14 +17,16 @@ public class ConvProc {
         float sum = sum(kernel);
         int msize = kernel[0].length;
         out = img.getRaster();
+        // use only out raster for some effects...
+        read = img.copyData(null);
         for (int x = 0; x < w; x++){
-            for (int y = 0; y < h; y++){
-                out.setDataElements(x, y, convolve(out, x, y, w, h, kernel, msize, sum));
+            for (int y = 0; y < h; y++){ 
+                out.setDataElements(x, y, convolve(read, x, y, w, h, kernel, msize, sum));
             }
         }        
     }
     
-  byte[] convolve(Raster img, int x, int y, int w, int h, float[][] mat, int matsize, float sum){
+    byte[] convolve(Raster img, int x, int y, int w, int h, float[][] mat, int matsize, float sum){
         float r = 0, g = 0, b = 0;
         int offs = matsize/2;
         byte[] vals;
