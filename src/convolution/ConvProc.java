@@ -8,7 +8,7 @@ import java.awt.image.WritableRaster;
 
 public class ConvProc {
     
-    Raster out;
+    WritableRaster out;
     static float[][] blur = new float[][]{{1,1,1},{1,1,1},{1,1,1}};
 
     
@@ -17,27 +17,31 @@ public class ConvProc {
         int h = img.getHeight();
         float sum = sum(kernel);
         int msize = kernel[0].length;
-        
+        out = img.getRaster();
         for (int x = 0; x < w; x++){
             for (int y = 0; y < h; y++){
-                img.setRGB(x, y, convolve(img, x, y, w, h, kernel, msize, sum));
+                out.setDataElements(x, y, convolve(out, x, y, w, h, kernel, msize, sum));
+             //   out.setPixel(x, y, convolve(out, x, y, w, h, kernel, msize, sum));
             }
         }        
     }
     
-  int convolve(BufferedImage img, int x, int y, int w, int h, float[][] mat, int matsize, float sum){
+  byte[] convolve(Raster img, int x, int y, int w, int h, float[][] mat, int matsize, float sum){
         float r = 0, g = 0, b = 0;
         int offs = matsize/2;
         float scale = 1/sum;
+        byte[] vals = new byte[]{0,0,0};
         for (int i = 0; i < matsize; i++){
             for (int j = 0; j < matsize; j++){
-                int val = img.getRGB(constrain(x+(i-offs),0,w-1), constrain(y+(j-offs),0,h-1));
-                r += getR(val) * mat[i][j]*scale;
-                g += getG(val) * mat[i][j]*scale;
-                b += getB(val) * mat[i][j]*scale;
+                vals = (byte[])img.getDataElements(constrain(x+(i-offs),0,w-1), constrain(y+(j-offs),0,h-1), null);
+                r += (vals[0]&0xff) * mat[i][j];
+                g += (vals[1]&0xff) * mat[i][j];
+                b += (vals[2]&0xff) * mat[i][j];
+
             }
-        }
-        return rgb(r*255,g*255,b*255);
+        } 
+        return new byte[]{(byte)(r*scale),(byte)(g*scale),(byte)(b*scale)};
+//            return new float[]{r*scale, g*scale, b*scale};
     }
     
     int constrain(int in, int min, int max){
