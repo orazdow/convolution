@@ -1,4 +1,3 @@
-
 package convolution;
 
 import java.awt.image.BufferedImage;
@@ -42,7 +41,6 @@ public class ConvProc {
     
     static int constrain(int in, int min, int max){
         return in < min ? 0 : in > max ? max : in;
-       // return Math.max(0,Math.min(in, max));
     }
     
     static float sum(float[][] m){
@@ -57,34 +55,4 @@ public class ConvProc {
         return rtn;
     }
     
-    static int rgb(int r, int g, int b){
-        int rgb = r;
-        rgb = (rgb << 8) + g;
-        rgb = (rgb << 8) + b;
-        return rgb;
-    }
-    static int rgb(float r, float g, float b){
-        int rgb = (int)r;
-        rgb = (rgb << 8) + (int)g;
-        rgb = (rgb << 8) + (int)b;
-        return rgb;
-    }
-//    static int getR(int in){
-//        return ((in & 0xff0000) >> 16);
-//    }
-//    static int getG(int in){
-//        return ((in & 0xff00) >> 8);
-//    }
-//    static int getB(int in){
-//        return (in & 0xff);
-//    }     
-    static float getR(int in){
-        return ((in & 0xff0000) >> 16)/255f;
-    }
-    static float getG(int in){
-        return ((in & 0xff00) >> 8)/255f;
-    }
-    static float getB(int in){
-        return (in & 0xff)/255f;
-    } 
 }
