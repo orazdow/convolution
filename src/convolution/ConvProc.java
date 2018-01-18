@@ -28,7 +28,7 @@ public class ConvProc {
   byte[] convolve(Raster img, int x, int y, int w, int h, float[][] mat, int matsize, float sum){
         float r = 0, g = 0, b = 0;
         int offs = matsize/2;
-        byte[] vals = new byte[]{0,0,0};
+        byte[] vals;
         for (int i = 0; i < matsize; i++){
             for (int j = 0; j < matsize; j++){
                 vals = (byte[])img.getDataElements(constrain(x+(i-offs),0,w-1), constrain(y+(j-offs),0,h-1), null);
@@ -41,12 +41,8 @@ public class ConvProc {
     }
     
     static int constrain(int in, int min, int max){
-        if(in < min)
-            return min;
-        if(in > max)
-            return max;
-        return in;
-//        return Math.max(0,Math.min(in, max));
+        return in < min ? 0 : in > max ? max : in;
+       // return Math.max(0,Math.min(in, max));
     }
     
     static float sum(float[][] m){
