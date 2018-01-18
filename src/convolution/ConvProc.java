@@ -21,7 +21,6 @@ public class ConvProc {
         for (int x = 0; x < w; x++){
             for (int y = 0; y < h; y++){
                 out.setDataElements(x, y, convolve(out, x, y, w, h, kernel, msize, sum));
-             //   out.setPixel(x, y, convolve(out, x, y, w, h, kernel, msize, sum));
             }
         }        
     }
@@ -29,7 +28,6 @@ public class ConvProc {
   byte[] convolve(Raster img, int x, int y, int w, int h, float[][] mat, int matsize, float sum){
         float r = 0, g = 0, b = 0;
         int offs = matsize/2;
-        float scale = 1/sum;
         byte[] vals = new byte[]{0,0,0};
         for (int i = 0; i < matsize; i++){
             for (int j = 0; j < matsize; j++){
@@ -37,20 +35,18 @@ public class ConvProc {
                 r += (vals[0]&0xff) * mat[i][j];
                 g += (vals[1]&0xff) * mat[i][j];
                 b += (vals[2]&0xff) * mat[i][j];
-
             }
         } 
-        return new byte[]{(byte)(r*scale),(byte)(g*scale),(byte)(b*scale)};
-//            return new float[]{r*scale, g*scale, b*scale};
+        return new byte[]{(byte)(r/sum),(byte)(g/sum),(byte)(b/sum)};
     }
     
-    int constrain(int in, int min, int max){
-//        if(in < min)
-//            return min;
-//        if(in > max)
-//            return max;
-//        return in;
-        return Math.max(0,Math.min(in, max));
+    static int constrain(int in, int min, int max){
+        if(in < min)
+            return min;
+        if(in > max)
+            return max;
+        return in;
+//        return Math.max(0,Math.min(in, max));
     }
     
     static float sum(float[][] m){
